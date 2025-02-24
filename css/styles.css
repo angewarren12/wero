@@ -1,0 +1,274 @@
+body {
+    background-color: #FFFFFF;
+    min-height: 100vh;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content, .content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 80px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 15px;
+}
+
+.header {
+    background-color: #FFF166;
+    width: 100%;
+    padding: 15px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 60px;
+    z-index: 1000;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 24px;
+    margin-left: 20px;
+}
+
+.card {
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    border: none;
+    margin-top: 20px;
+}
+
+.btn-custom {
+    background-color: #FFF166;
+    border: 2px solid black;
+    font-weight: bold;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn-custom:hover {
+    transform: scale(1.02);
+    background-color: #FFE436;
+}
+
+.image-wrapper img {
+    max-width: 150px;
+    height: auto;
+    margin: 20px auto;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.form-control {
+    background-color: #F5F5F5;
+    border: 2px solid #FFD700;
+    border-radius: 15px;
+    padding: 15px 20px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #FFE436;
+    box-shadow: 0 0 0 0.2rem rgba(255, 241, 102, 0.25);
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.form-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #FFD700;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: #444;
+}
+
+.alert {
+    margin-top: 10px;
+}
+
+/* Style du footer */
+footer {
+    background-color: #000000;
+    color: white;
+    padding: 40px 20px;
+    margin-top: 50px;
+    width: 100%;
+}
+
+footer .logo-white {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    display: block;
+}
+
+footer p {
+    margin: 10px 0;
+}
+
+footer .social-icons {
+    margin: 20px 0;
+}
+
+footer .social-icons a {
+    color: white;
+    margin: 0 10px;
+    font-size: 24px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer .social-icons a:hover {
+    color: #FFF166;
+}
+
+footer .security {
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+footer .copyright {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Styles pour les pages spécifiques */
+.bank-info {
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.img-fluid {
+    border-radius: 10px;
+    max-width: 200px;
+    margin: 20px auto;
+    display: block;
+}
+
+/* Style des boutons pays */
+.btn-country {
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-country:hover {
+    transform: scale(1.02);
+}
+
+/* Style des boutons pays */
+.montant {
+    font-size: 24px;
+    color: #28a745;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 20px;
+}
+
+/* Styles spécifiques pour la page de réception */
+.montant {
+    font-size: 32px;
+    color: #28a745;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+#userName {
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.text-start p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-top: 20px;
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Styles spécifiques pour la page de virement */
+.virement-text {
+    margin: 15px 0;
+    line-height: 1.6;
+}
+
+.text-primary-blue {
+    color: #2c4285;
+}
+
+.text-secondary-blue {
+    color: #6787ea;
+}
+
+.footer-logo {
+    width: 150px;
+    margin: 20px auto;
+    display: block;
+}
+
+.footer-note {
+    font-weight: 700;
+    font-size: 10px;
+    color: red;
+    max-width: 400px;
+    text-align: center;
+    margin: 0 auto 20px;
+    padding: 0 15px;
+}
+
+/* Ajustements pour toutes les pages */
+.card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 500px;
+    width: 100%;
+}

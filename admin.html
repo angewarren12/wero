@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration WERO</title>
+    
+    <!-- Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        @keyframes ripple {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8);
+            }
+            50% {
+                box-shadow: 0 0 0 15px rgba(239, 68, 68, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 0 25px rgba(239, 68, 68, 0);
+            }
+        }
+        .ripple-effect {
+            animation: ripple 1.5s infinite ease-out;
+        }
+
+        .transition-effect {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-add {
+            background-color: #10B981;
+            color: white;
+            padding: 12px;
+            border-radius: 9999px;
+            margin-right: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-add:hover {
+            transform: scale(1.05);
+            background-color: #059669;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 500px;
+            margin: 40px auto;
+            position: relative;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification.success {
+            background-color: #10B981;
+        }
+
+        .notification.error {
+            background-color: #EF4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-yellow-400 to-yellow-600 min-h-screen flex flex-col items-center justify-center p-6">
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <!-- Modal de connexion -->
+    <div id="passwordModal" class="modal flex items-center justify-center">
+        <div class="modal-content w-full max-w-md bg-white rounded-lg p-8 shadow-xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6"> Connexion Administrateur</h2>
+            <form id="passwordForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                        Mot de passe
+                    </label>
+                    <input type="password" id="password" name="password" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500"
+                           required>
+                </div>
+                <button type="submit" 
+                        class="w-full bg-yellow-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors">
+                    Se connecter
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal d'ajout d'utilisateur -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold text-gray-800 mb-4"> Ajouter un utilisateur</h2>
+            <form id="addUserForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Nom</label>
+                    <input type="text" name="nom" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Prénom</label>
+                    <input type="text" name="prenom" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Montant</label>
+                    <input type="number" name="montant" required step="0.01"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">IBAN</label>
+                    <input type="text" name="iban"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="closeAddUserModal()">
+                        Annuler
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                        Ajouter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de suppression -->
+    <div id="deleteModal" class="modal delete-modal">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold text-gray-800 mb-4"> Confirmer la suppression</h2>
+            <p class="text-gray-600 mb-6">Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Annuler</button>
+                <button onclick="confirmDelete()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div id="mainContent" class="w-full max-w-6xl bg-white shadow-lg rounded-lg p-6 opacity-30 blur-sm transition-all duration-500">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800"> Données Utilisateurs WERO</h1>
+            <div class="flex items-center">
+                <button onclick="showAddUserModal()" class="btn-add">
+                    <i class="fas fa-plus mr-2"></i> Ajouter
+                </button>
+                <button onclick="logout()" class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+        
+        <div id="usersList" class="space-y-4">
+            <!-- Les utilisateurs seront ajoutés ici dynamiquement -->
+        </div>
+    </div>
+
+    <script>
+        // Configuration jsPDF
+        if (typeof window.jspdf === 'undefined') {
+            console.error('jsPDF n\'est pas chargé correctement');
+        }
+    </script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
