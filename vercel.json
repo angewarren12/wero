@@ -10,22 +10,25 @@
       "use": "@vercel/static"
     },
     {
-      "src": "js/*.js",
+      "src": "js/**",
       "use": "@vercel/static"
     },
     {
-      "src": "css/*",
+      "src": "css/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/users",
+      "dest": "/api/users.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "src": "/api/users/(.*)",
+      "dest": "/api/users.js?code=$1"
+    },
+    {
+      "handle": "filesystem"
     }
   ]
 }
