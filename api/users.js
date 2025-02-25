@@ -1,5 +1,4 @@
-import { promises as fs } from 'fs';
-import path from 'path';
+import { connectToDatabase } from '../lib/mongodb';
 
 // Fonction pour générer un code unique
 function generateUniqueCode() {
@@ -31,37 +30,6 @@ function logRequest(method, path, body = null) {
     console.log('==================');
 }
 
-// Fonction pour lire les données
-async function readData() {
-    try {
-        const filePath = path.join(process.cwd(), 'data.json');
-        console.log('Lecture du fichier:', filePath);
-        const fileContent = await fs.readFile(filePath, 'utf8');
-        console.log('Contenu lu:', fileContent.substring(0, 100) + '...');
-        return JSON.parse(fileContent);
-    } catch (error) {
-        logError('readData', error, { filePath: path.join(process.cwd(), 'data.json') });
-        return [];
-    }
-}
-
-// Fonction pour écrire les données
-async function writeData(data) {
-    try {
-        const filePath = path.join(process.cwd(), 'data.json');
-        console.log('Écriture dans le fichier:', filePath);
-        console.log('Données à écrire:', JSON.stringify(data, null, 2));
-        await fs.writeFile(filePath, JSON.stringify(data, null, 4), 'utf8');
-        console.log('Écriture réussie');
-    } catch (error) {
-        logError('writeData', error, { 
-            filePath: path.join(process.cwd(), 'data.json'),
-            dataLength: data.length
-        });
-        throw error;
-    }
-}
-
 export default async function handler(req, res) {
     logRequest(req.method, req.url, req.body);
 
@@ -76,18 +44,17 @@ export default async function handler(req, res) {
     }
 
     try {
-        console.log('Début du traitement de la requête');
-        
-        // Lire les données au début de chaque requête
-        const data = await readData();
-        console.log(`${data.length} utilisateurs chargés`);
+        console.log('Connexion à MongoDB...');
+        const { db } = await connectToDatabase();
+        const collection = db.collection('users');
+        console.log('Connecté à MongoDB');
 
         if (req.method === 'GET') {
             const userCode = req.query.code;
             console.log('GET - Code recherché:', userCode);
             
             if (userCode) {
-                const user = data.find(u => u.code === userCode);
+                const user = await collection.findOne({ code: userCode });
                 if (!user) {
                     console.log('Utilisateur non trouvé:', userCode);
                     return res.status(404).json({ error: 'Utilisateur non trouvé' });
@@ -95,7 +62,10 @@ export default async function handler(req, res) {
                 console.log('Utilisateur trouvé:', user);
                 return res.status(200).json(user);
             }
-            return res.status(200).json(data);
+
+            const users = await collection.find({}).toArray();
+            console.log(`${users.length} utilisateurs trouvés`);
+            return res.status(200).json(users);
         }
 
         if (req.method === 'POST') {
@@ -113,8 +83,7 @@ export default async function handler(req, res) {
             };
             console.log('Nouvel utilisateur à créer:', newUser);
 
-            data.push(newUser);
-            await writeData(data);
+            await collection.insertOne(newUser);
             console.log('Utilisateur créé avec succès');
             return res.status(201).json(newUser);
         }
@@ -127,14 +96,12 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'Code utilisateur requis' });
             }
 
-            const userIndex = data.findIndex(u => u.code === userCode);
-            if (userIndex === -1) {
+            const result = await collection.deleteOne({ code: userCode });
+            if (result.deletedCount === 0) {
                 console.log('Utilisateur non trouvé pour suppression:', userCode);
                 return res.status(404).json({ error: 'Utilisateur non trouvé' });
             }
 
-            data.splice(userIndex, 1);
-            await writeData(data);
             console.log('Utilisateur supprimé avec succès');
             return res.status(200).json({ message: 'Utilisateur supprimé' });
         }

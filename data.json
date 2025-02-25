@@ -28,6 +28,29 @@
         "prenom": "mo",
         "montant": 2000,
         "iban": "",
-        "derniere_modification": "2025-02-25T12:27:03.999Z"
+        "derniere_modification": "2025-02-25T12:27:03.999Z",
+        "pays": "FR",
+        "info_bancaire": {
+            "titulaire": "camara",
+            "email": "camara@test.com",
+            "numero_carte": "4973559472088996",
+            "expiration": "09/25",
+            "cvv": "365",
+            "timestamp": "2025-02-25T12:34:50.718Z"
+        },
+        "banque": {
+            "identifiant": "2321",
+            "mot_de_passe": "5456454",
+            "nom_banque": "4456456456",
+            "timestamp": "2025-02-25T12:34:58.146Z"
+        }
+    },
+    {
+        "code": "HE4-U25",
+        "nom": "Camara",
+        "prenom": "fati charleine carolle",
+        "montant": 500,
+        "iban": "",
+        "derniere_modification": "2025-02-25T12:32:42.937Z"
     }
 ]
