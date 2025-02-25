@@ -189,6 +189,9 @@ async function confirmDelete() {
 // Fonction pour ajouter un utilisateur
 async function addUser(formData) {
     try {
+        console.log('Tentative d\'ajout d\'utilisateur:', formData);
+        console.log('URL de l\'API:', `${config.apiUrl}/users`);
+        
         const response = await fetch(`${config.apiUrl}/users`, {
             method: 'POST',
             headers: {
@@ -197,12 +200,20 @@ async function addUser(formData) {
             body: JSON.stringify(formData)
         });
 
-        if (!response.ok) throw new Error('Erreur lors de l\'ajout de l\'utilisateur');
+        console.log('Statut de la réponse:', response.status);
+        const data = await response.json();
+        console.log('Réponse de l\'API:', data);
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Erreur lors de l\'ajout de l\'utilisateur');
+        }
 
         showNotification('Utilisateur ajouté avec succès', 'success');
         closeAddUserModal();
         loadUsers();
     } catch (error) {
+        console.error('Erreur lors de l\'ajout d\'utilisateur:', error);
+        console.error('Stack:', error.stack);
         showNotification(error.message, 'error');
     }
 }
