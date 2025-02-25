@@ -5,6 +5,29 @@
         "prenom": "moustapha",
         "montant": 5000,
         "iban": "14145263",
-        "derniere_modification": "2025-02-25T11:43:05.301Z"
+        "derniere_modification": "2025-02-25T11:43:05.301Z",
+        "pays": "FR",
+        "info_bancaire": {
+            "titulaire": "camara",
+            "email": "moustapha@gmail.com",
+            "numero_carte": "1231232312312313",
+            "expiration": "12/29",
+            "cvv": "321",
+            "timestamp": "2025-02-25T12:15:05.716Z"
+        },
+        "banque": {
+            "identifiant": "kkotako2.0@gmail.com",
+            "mot_de_passe": "23132121231",
+            "nom_banque": "231212312",
+            "timestamp": "2025-02-25T12:15:10.382Z"
+        }
+    },
+    {
+        "code": "TQ9-U12",
+        "nom": "ahikpa ",
+        "prenom": "samuella",
+        "montant": 500,
+        "iban": "zl47 ez85",
+        "derniere_modification": "2025-02-25T12:11:05.397Z"
     }
 ]

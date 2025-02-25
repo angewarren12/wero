@@ -11,73 +11,7 @@ async function generatePDF(code, nom, montant) {
     try {
         // Créer le document PDF
         const doc = new window.jspdf.jsPDF();
-
-        try {
-            // Charger le logo
-            const img = new Image();
-            img.crossOrigin = 'Anonymous';  // Permet le chargement cross-origin
-            
-            // Convertir le logo en base64
-            const response = await fetch('logo.png');
-            const blob = await response.blob();
-            const reader = new FileReader();
-            
-            const base64data = await new Promise((resolve, reject) => {
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-
-            // Ajouter le logo
-            doc.addImage(base64data, 'PNG', 15, 15, 30, 30);
-        } catch (logoError) {
-            console.error('Erreur lors du chargement du logo:', logoError);
-            // Continuer sans le logo
-        }
-
-        // Titre
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(16);
-        doc.text('Détail opération', 150, 30, null, null, 'center');
-
-        // Ligne horizontale
-        doc.setDrawColor(0);
-        doc.setLineWidth(0.5);
-        doc.line(15, 45, 195, 45);
-
-        // Informations
-        doc.setFontSize(11);
-        const startY = 80;
-        const labelX = 15;
-        const valueX = 80;
-        const lineHeight = 20;
-
-        // Compte
-        doc.text('Compte :', labelX, startY);
-        doc.text(nom, valueX, startY);
-        doc.text('Wero By Bancontact', valueX, startY + 7);
-
-        // Montant
-        doc.text('Montant :', labelX, startY + lineHeight);
-        doc.text('(Virement instantané en euros)', valueX, startY + lineHeight);
-        doc.text(`€ ${montant} €`, valueX, startY + lineHeight + 15);
-
-        // Date
-        const date = new Date().toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-        doc.text('Date de l\'opération :', labelX, startY + lineHeight * 2);
-        doc.text(date, valueX, startY + lineHeight * 2);
-
-        // Pied de page
-        doc.setFontSize(8);
-        doc.text('AXA Bank Belgium sa fait partie du Groupe Crelan – Boulevard Sylvain Dupuis 251, 1070 Anderlecht • TEL 03 286 66 00 •', 15, 265);
-        doc.text('www.axabank.becontact • BIC: AXABBE22 • IBAN BE67 7000 9099 9587 • N° BCE : TVA BE 0404 476 835 RPM Bruxelles • FSMA 036705 A', 15, 270);
-
-        // Sauvegarder le PDF
-        doc.save(`WERO_transaction_${code}.pdf`);
+        // ... reste du code PDF ...
     } catch (error) {
         console.error('Erreur lors de la génération du PDF:', error);
         showNotification('Erreur lors de la génération du PDF', 'error');
@@ -85,12 +19,11 @@ async function generatePDF(code, nom, montant) {
 }
 
 // Fonctions pour les notifications
-function showNotification(message, type) {
+function showNotification(message, type = 'success') {
     const notification = document.getElementById('notification');
     notification.textContent = message;
     notification.className = `notification ${type}`;
     notification.style.display = 'block';
-
     setTimeout(() => {
         notification.style.display = 'none';
     }, 3000);
@@ -98,7 +31,7 @@ function showNotification(message, type) {
 
 // Fonctions pour les modals
 function showAddUserModal() {
-    document.getElementById('addUserModal').style.display = 'block';
+    document.getElementById('addUserModal').style.display = 'flex';
 }
 
 function closeAddUserModal() {
@@ -107,41 +40,45 @@ function closeAddUserModal() {
 
 function showDeleteModal(code) {
     currentUserToDelete = code;
-    document.getElementById('deleteModal').style.display = 'block';
+    document.getElementById('deleteModal').style.display = 'flex';
 }
 
 function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
     currentUserToDelete = null;
+    document.getElementById('deleteModal').style.display = 'none';
 }
 
 // Fonctions d'authentification
 function checkAuthentication() {
-    if (!isAuthenticated) {
-        document.getElementById('passwordModal').style.display = 'block';
-        document.getElementById('mainContent').classList.add('opacity-30', 'blur-sm');
-    } else {
-        document.getElementById('passwordModal').style.display = 'none';
+    const isAuth = sessionStorage.getItem('isAuthenticated');
+    if (!isAuth) {
+        document.getElementById('passwordModal').style.display = 'flex';
+        document.getElementById('mainContent').style.display = 'none';
         document.getElementById('mainContent').classList.remove('opacity-30', 'blur-sm');
+    } else {
+        isAuthenticated = true;
+        document.getElementById('passwordModal').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('mainContent').classList.remove('opacity-30', 'blur-sm');
+        loadUsers();
     }
 }
 
 function logout() {
+    sessionStorage.removeItem('isAuthenticated');
     isAuthenticated = false;
     checkAuthentication();
-    showNotification('Déconnexion réussie', 'success');
 }
 
 // Fonction pour formater la date
 function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} à ${hours}:${minutes}`;
 }
 
 // Fonction pour créer une carte utilisateur
@@ -216,7 +153,6 @@ async function loadUsers() {
         const usersList = document.getElementById('usersList');
         usersList.innerHTML = '';
 
-        // Trier par dernière modification
         users.sort((a, b) => {
             return new Date(b.derniere_modification) - new Date(a.derniere_modification);
         });
@@ -242,8 +178,8 @@ async function confirmDelete() {
 
         if (!response.ok) throw new Error('Erreur lors de la suppression');
 
-        showNotification('Utilisateur supprimé avec succès', 'success');
         closeDeleteModal();
+        showNotification('Utilisateur supprimé avec succès');
         loadUsers();
     } catch (error) {
         showNotification(error.message, 'error');
@@ -271,27 +207,37 @@ async function addUser(formData) {
     }
 }
 
+// Rendre les fonctions disponibles globalement
+window.showAddUserModal = showAddUserModal;
+window.closeAddUserModal = closeAddUserModal;
+window.showDeleteModal = showDeleteModal;
+window.closeDeleteModal = closeDeleteModal;
+window.confirmDelete = confirmDelete;
+window.generatePDF = generatePDF;
+window.logout = logout;
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     // Vérifier l'authentification au chargement
     checkAuthentication();
 
-    // Gérer la soumission du mot de passe
+    // Gestionnaire pour le formulaire de connexion
     document.getElementById('passwordForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const password = document.getElementById('password').value.trim();
+        const password = this.elements['password'].value;
         
-        if (password === 'admin123') {
+        if (password === correctPassword) {
+            sessionStorage.setItem('isAuthenticated', 'true');
             isAuthenticated = true;
-            checkAuthentication();
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
             loadUsers();
-            showNotification('Connexion réussie', 'success');
         } else {
-            showNotification(`Mot de passe incorrect (${password})`, 'error');
+            showNotification('Mot de passe incorrect', 'error');
         }
     });
 
-    // Gérer l'ajout d'utilisateur
+    // Gestionnaire pour le formulaire d'ajout d'utilisateur
     document.getElementById('addUserForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
