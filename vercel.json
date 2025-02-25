@@ -17,6 +17,10 @@
     {
       "src": "css/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "data.json",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -26,7 +30,7 @@
     },
     {
       "src": "/api/users/(.*)",
-      "dest": "/api/users.js?code=$1"
+      "dest": "/api/users.js"
     },
     {
       "handle": "filesystem"

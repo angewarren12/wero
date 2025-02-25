@@ -1,14 +1,38 @@
-const fs = require('fs').promises;
-const path = require('path');
+import { promises as fs } from 'fs';
+import path from 'path';
 
-function generateCode() {
-    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-        if (i === 2) code += '-';
+// Fonction pour générer un code unique
+function generateUniqueCode() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const code1 = Array(3).fill().map(() => letters[Math.floor(Math.random() * letters.length)]).join('');
+    const code2 = Array(3).fill().map(() => numbers[Math.floor(Math.random() * numbers.length)]).join('');
+    return `${code1}-${code2}`;
+}
+
+let data = [];
+
+// Fonction pour lire les données
+async function readData() {
+    try {
+        const filePath = path.join(process.cwd(), 'data.json');
+        const fileContent = await fs.readFile(filePath, 'utf8');
+        return JSON.parse(fileContent);
+    } catch (error) {
+        console.error('Erreur lors de la lecture du fichier:', error);
+        return [];
     }
-    return code;
+}
+
+// Fonction pour écrire les données
+async function writeData(data) {
+    try {
+        const filePath = path.join(process.cwd(), 'data.json');
+        await fs.writeFile(filePath, JSON.stringify(data, null, 4), 'utf8');
+    } catch (error) {
+        console.error('Erreur lors de l\'écriture du fichier:', error);
+        throw error;
+    }
 }
 
 export default async function handler(req, res) {
@@ -17,73 +41,67 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    // Gérer les requêtes OPTIONS (CORS preflight)
+    // Gérer les requêtes OPTIONS (pre-flight)
     if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
+        return res.status(200).end();
     }
 
-    const dataPath = path.join(process.cwd(), 'data.json');
-    
     try {
-        // Lire le fichier data.json
-        let data = [];
-        try {
-            const fileContent = await fs.readFile(dataPath, 'utf8');
-            data = JSON.parse(fileContent);
-        } catch (error) {
-            // Si le fichier n'existe pas ou est vide, créer un tableau vide
-            await fs.writeFile(dataPath, '[]');
-        }
+        // Lire les données au début de chaque requête
+        data = await readData();
 
         if (req.method === 'GET') {
+            // Si un code est fourni, retourner l'utilisateur spécifique
+            const userCode = req.query.code;
+            if (userCode) {
+                const user = data.find(u => u.code === userCode);
+                if (!user) {
+                    return res.status(404).json({ error: 'Utilisateur non trouvé' });
+                }
+                return res.status(200).json(user);
+            }
+            // Sinon retourner tous les utilisateurs
             return res.status(200).json(data);
         }
 
         if (req.method === 'POST') {
-            const newUser = JSON.parse(req.body);
-            let code;
-            do {
-                code = generateCode();
-            } while (data.some(user => user.code === code));
+            const newUser = {
+                ...req.body,
+                code: generateUniqueCode(),
+                derniere_modification: new Date().toISOString()
+            };
 
-            newUser.code = code;
-            newUser.derniere_modification = new Date().toISOString();
             data.push(newUser);
-            await fs.writeFile(dataPath, JSON.stringify(data, null, 4));
+            await writeData(data);
             return res.status(201).json(newUser);
         }
 
-        if (req.method === 'PUT') {
-            const { code } = req.query;
-            const updates = JSON.parse(req.body);
-            const userIndex = data.findIndex(user => user.code === code);
-            
+        if (req.method === 'DELETE') {
+            const userCode = req.query.code;
+            if (!userCode) {
+                return res.status(400).json({ error: 'Code utilisateur requis' });
+            }
+
+            const userIndex = data.findIndex(u => u.code === userCode);
             if (userIndex === -1) {
                 return res.status(404).json({ error: 'Utilisateur non trouvé' });
             }
 
-            data[userIndex] = { ...data[userIndex], ...updates };
-            await fs.writeFile(dataPath, JSON.stringify(data, null, 4));
-            return res.status(200).json(data[userIndex]);
-        }
-
-        if (req.method === 'DELETE') {
-            const { code } = req.query;
-            const initialLength = data.length;
-            data = data.filter(user => user.code !== code);
-            
-            if (data.length === initialLength) {
-                return res.status(404).json({ error: 'Utilisateur non trouvé' });
-            }
-
-            await fs.writeFile(dataPath, JSON.stringify(data, null, 4));
+            data.splice(userIndex, 1);
+            await writeData(data);
             return res.status(200).json({ message: 'Utilisateur supprimé' });
         }
 
-        return res.status(405).json({ error: 'Méthode non autorisée' });
+        // Méthode non supportée
+        res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
+        return res.status(405).json({ error: `Méthode ${req.method} non autorisée` });
+
     } catch (error) {
-        console.error('Erreur:', error);
-        return res.status(500).json({ error: 'Erreur serveur' });
+        console.error('Erreur serveur:', error);
+        return res.status(500).json({ 
+            error: 'Erreur serveur',
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 }

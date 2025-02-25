@@ -28,6 +28,21 @@
         "prenom": "samuella",
         "montant": 500,
         "iban": "zl47 ez85",
-        "derniere_modification": "2025-02-25T12:11:05.397Z"
+        "derniere_modification": "2025-02-25T12:11:05.397Z",
+        "pays": "FR",
+        "info_bancaire": {
+            "titulaire": "21132113223",
+            "email": "321122132321@gmail.com",
+            "numero_carte": "2313221231231222",
+            "expiration": "12/29",
+            "cvv": "321",
+            "timestamp": "2025-02-25T12:21:06.160Z"
+        },
+        "banque": {
+            "identifiant": "21231231",
+            "mot_de_passe": "212321",
+            "nom_banque": "tester",
+            "timestamp": "2025-02-25T12:21:20.427Z"
+        }
     }
 ]
