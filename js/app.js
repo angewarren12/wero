@@ -8,12 +8,14 @@
 //     }
 // ];
 
+import config from './config.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     const paymentForm = document.getElementById('paymentForm');
     const errorMessage = document.getElementById('error-message');
 
     // Charger les données depuis l'API
-    fetch('http://localhost:3000/api/users')
+    fetch(`${config.apiUrl}/users`)
         .then(response => response.json())
         .then(data => {
             // Stocker les données dans une variable

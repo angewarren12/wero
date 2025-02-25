@@ -1,12 +1,10 @@
-{
-  "users": [
+[
     {
-      "id": "1",
-      "email": "admin@example.com",
-      "password": "admin123",
-      "role": "admin",
-      "balance": 10000
+        "code": "SS0-J75",
+        "nom": "camara",
+        "prenom": "moustapha",
+        "montant": 5000,
+        "iban": "14145263",
+        "derniere_modification": "2025-02-25T11:43:05.301Z"
     }
-  ],
-  "transactions": []
-}
+]

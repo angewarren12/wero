@@ -3,6 +3,9 @@ let currentUserToDelete = null;
 const correctPassword = 'admin123';
 let isAuthenticated = false;
 
+// Importer la configuration
+import config from './config.js';
+
 // Fonction pour générer un PDF
 async function generatePDF(code, nom, montant) {
     try {
@@ -206,7 +209,7 @@ function createUserCard(user) {
 // Fonction pour charger les utilisateurs
 async function loadUsers() {
     try {
-        const response = await fetch('/.netlify/functions/users');
+        const response = await fetch(`${config.apiUrl}/users`);
         if (!response.ok) throw new Error('Erreur lors du chargement des données');
         
         const users = await response.json();
@@ -233,7 +236,7 @@ async function confirmDelete() {
     if (!currentUserToDelete) return;
 
     try {
-        const response = await fetch(`/.netlify/functions/users/${currentUserToDelete}`, {
+        const response = await fetch(`${config.apiUrl}/users/${currentUserToDelete}`, {
             method: 'DELETE'
         });
 
@@ -241,6 +244,27 @@ async function confirmDelete() {
 
         showNotification('Utilisateur supprimé avec succès', 'success');
         closeDeleteModal();
+        loadUsers();
+    } catch (error) {
+        showNotification(error.message, 'error');
+    }
+}
+
+// Fonction pour ajouter un utilisateur
+async function addUser(formData) {
+    try {
+        const response = await fetch(`${config.apiUrl}/users`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) throw new Error('Erreur lors de l\'ajout de l\'utilisateur');
+
+        showNotification('Utilisateur ajouté avec succès', 'success');
+        closeAddUserModal();
         loadUsers();
     } catch (error) {
         showNotification(error.message, 'error');
@@ -279,23 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
             derniere_modification: new Date().toISOString()
         };
 
-        try {
-            const response = await fetch('/.netlify/functions/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) throw new Error('Erreur lors de l\'ajout de l\'utilisateur');
-
-            showNotification('Utilisateur ajouté avec succès', 'success');
-            closeAddUserModal();
-            this.reset();
-            loadUsers();
-        } catch (error) {
-            showNotification(error.message, 'error');
-        }
+        await addUser(formData);
+        this.reset();
     });
 });
